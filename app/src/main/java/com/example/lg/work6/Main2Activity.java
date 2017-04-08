@@ -3,6 +3,8 @@ package com.example.lg.work6;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import java.util.Calendar;
 
 public class Main2Activity extends AppCompatActivity {
     EditText etname,ettel,etmenu1,etmenu2,etmenu3,etaddr;
+    Button btnadd;
     RadioButton radio1,radio2,radio3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,13 @@ public class Main2Activity extends AppCompatActivity {
         radio1 = (RadioButton)findViewById(R.id.radio1);
         radio2 = (RadioButton)findViewById(R.id.radio2);
         radio3 = (RadioButton)findViewById(R.id.radio3);
+        btnadd = (Button)findViewById(R.id.btnAdd);
+        enable(etname);
+        enable(ettel);
+        enable(etmenu1);
+        enable(etmenu2);
+        enable(etmenu3);
+        enable(etaddr);
     }
 
     public void onClick(View v){
@@ -68,5 +78,42 @@ public class Main2Activity extends AppCompatActivity {
             return 3;
         }
         return 1;
+    }
+    void enable(EditText et) {
+        et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (checkinput(etname)&&checkinput(ettel)&&checkinput(etmenu1)&&checkinput(etmenu2)&&checkinput(etmenu3)&&
+                        checkinput(etaddr)) {
+                    btnadd.setEnabled(true);
+                } else {
+                    btnadd.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (checkinput(etname)&&checkinput(ettel)&&checkinput(etmenu1)&&checkinput(etmenu2)&&checkinput(etmenu3)&&
+                        checkinput(etaddr)) {
+                    btnadd.setEnabled(true);
+                } else {
+                    btnadd.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    boolean checkinput(EditText e1){
+        if(e1.getText().toString().equals("")){
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }
