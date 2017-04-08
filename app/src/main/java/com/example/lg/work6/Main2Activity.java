@@ -26,6 +26,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     void init(){
+        setTitle("나의 맛집");
         etname = (EditText)findViewById(R.id.etname);
         ettel = (EditText)findViewById(R.id.ettel);
         etmenu1 = (EditText)findViewById(R.id.etmenu1);

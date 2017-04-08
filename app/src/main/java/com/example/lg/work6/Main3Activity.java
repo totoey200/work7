@@ -20,6 +20,7 @@ public class Main3Activity extends AppCompatActivity {
     }
 
     void init(){
+        setTitle("나의 맛집");
         imgno = (ImageView)findViewById(R.id.imgno);
         txtname = (TextView)findViewById(R.id.txtname);
         etmenu1 = (TextView)findViewById(R.id.etmenu1);
