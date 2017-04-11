@@ -63,7 +63,7 @@ public class Rest_Info implements Parcelable{
     public String toString() {
         return this.name.toString();
     }
-        public String getName(){
+    public String getName(){
         return this.name;
     }
     public String getPhone(){

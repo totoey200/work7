@@ -54,7 +54,6 @@ public class Main2Activity extends AppCompatActivity {
         }
         if(v.getId()==R.id.btnAdd){
             Intent intent = new Intent();
-            intent.putExtra("info",100);
             String[] menulist = {convert(etmenu1),convert(etmenu2),convert(etmenu3)};
             DateFormat df = new SimpleDateFormat("yyyyMMdd");
             String date = df.format(Calendar.getInstance().getTime());
