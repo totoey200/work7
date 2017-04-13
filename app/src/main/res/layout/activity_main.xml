@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="com.example.lg.work6.MainActivity">
 
     <LinearLayout
         android:padding="5dp"
-        android:background="#ffe5e5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
@@ -42,13 +43,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
     <EditText
-        android:layout_marginTop="5dp"
         android:id="@+id/search_bar"
-        android:hint="검색할 맛집을 넣으세요"
-        android:background="#fce4e0"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#fce4e0"
+        android:drawableStart="@android:drawable/ic_lock_lock"
+        android:hint="검색할 맛집을 넣으세요" />
+
     <ListView
         android:textFilterEnabled="true"
         android:id="@+id/listview"

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         lv = (ListView)findViewById(R.id.listview);
         search_bar = (EditText)findViewById(R.id.search_bar);
         delete = (Button)findViewById(R.id.delete);
-        restAdapter = new RestAdapter(this,infolist);
+        restAdapter = new RestAdapter(this,showlist);
         lv.setAdapter(restAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -47,23 +47,6 @@ public class MainActivity extends AppCompatActivity {
                 Rest_Info rest_info = infolist.get(position);
                 intent.putExtra("info",rest_info);
                 startActivity(intent);
-            }
-        });
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("삭제확인")
-                        .setMessage("선택한 맛집을 정말 삭제할거에요?")
-                        .setNegativeButton("취소",null)
-                        .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                infolist.remove(position);
-                                restAdapter.notifyDataSetChanged();
-                            }
-                        }).show();
-                return true;
             }
         });
         search_bar.addTextChangedListener(new TextWatcher() {
@@ -80,10 +63,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
-                if(search.length() > 0)
-                    lv.setFilterText(search);
-                else
-                    lv.clearTextFilter();
+                if(search.length() > 0){
+                    int length = infolist.size();
+                    showlist.clear();
+                    for(int i=0;i<length;i++){
+                        if(infolist.get(i).getName().contains(search)){
+                            showlist.add(infolist.get(i));
+                        }
+                    }
+                }
+                else{
+                    showlist.clear();
+                    showlist.addAll(infolist);
+                }
+                restAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -105,22 +98,51 @@ public class MainActivity extends AppCompatActivity {
                 restAdapter.showcheckbox(true);
             }
             else if(delete.getText().toString().equals("삭제")) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("삭제확인")
-                        .setMessage("선택한 맛집을 정말 삭제할거에요?")
-                        .setNegativeButton("취소",null)
-                        .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                for(int i = infolist.size()-1;i>=0;i--){
-                                    if(infolist.get(i).getDelete_check()==1)
-                                        infolist.remove(i);
+                boolean changed = false;
+                for(int i = infolist.size()-1;i>=0;i--){
+                    if(infolist.get(i).getDelete_check()==1) {
+                        changed = true;
+                        break;
+                    }
+                }
+                if(changed){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("삭제확인")
+                            .setMessage("선택한 맛집을 정말 삭제할거에요?")
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    for(int i = infolist.size()-1;i>=0;i--){
+                                        if(infolist.get(i).getDelete_check()==1) {
+                                            infolist.get(i).setDelete_check(0);
+                                            showlist.get(i).setDelete_check(0);
+                                        }
+                                    }
+                                    delete.setText("선택");
+                                    lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                                    restAdapter.showcheckbox(false);
                                 }
-                                delete.setText("선택");
-                                lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
-                                restAdapter.showcheckbox(false);
-                            }
-                        }).show();
+                            })
+                            .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    for(int i = infolist.size()-1;i>=0;i--){
+                                        if(infolist.get(i).getDelete_check()==1) {
+                                            infolist.remove(i);
+                                            showlist.remove(i);
+                                        }
+                                    }
+                                    delete.setText("선택");
+                                    lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                                    restAdapter.showcheckbox(false);
+                                }
+                            }).show();
+                }
+                else {
+                    delete.setText("선택");
+                    lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                    restAdapter.showcheckbox(false);
+                }
             }
         }
     }
@@ -130,8 +152,9 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 Rest_Info rest_info = data.getParcelableExtra("info");
                 infolist.add(rest_info);
-                showlist = infolist;
+                showlist.add(rest_info);
                 restAdapter.notifyDataSetChanged();
+                search_bar.clearFocus();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

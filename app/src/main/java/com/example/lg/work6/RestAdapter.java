@@ -45,7 +45,7 @@ public class RestAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item,null);
         }
@@ -53,26 +53,26 @@ public class RestAdapter extends BaseAdapter {
         TextView name = (TextView)convertView.findViewById(R.id.list_name);
         TextView phone = (TextView)convertView.findViewById(R.id.list_phone);
         CheckBox checkBox = (CheckBox)convertView.findViewById(R.id.checkbox);
-        rest_info = data.get(position);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    rest_info.setDelete_check(1);
+                    data.get(position).setDelete_check(1);
                 }
                 else{
-                    rest_info.setDelete_check(0);
+                    data.get(position).setDelete_check(0);
                 }
             }
         });
-        setimage(img,rest_info);
-        name.setText(rest_info.getName());
-        phone.setText(rest_info.getPhone());
+        setimage(img,data.get(position));
+        name.setText(data.get(position).getName());
+        phone.setText(data.get(position).getPhone());
         if(check){
             checkBox.setVisibility(View.VISIBLE);
         }
         else{
             checkBox.setVisibility(View.INVISIBLE);
+            checkBox.setChecked(false);
         }
         return convertView;
     }
