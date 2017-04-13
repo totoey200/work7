@@ -14,6 +14,7 @@ public class Rest_Info implements Parcelable{
     private String url;
     private String reg_date;
     private int cate_no;
+    private int delete_check;
     public Rest_Info(String name, String phone, String[] menu, String url, String reg_date, int cate_no){
         this.name = name;
         this.phone = phone;
@@ -21,6 +22,7 @@ public class Rest_Info implements Parcelable{
         this.url = url;
         this.reg_date = reg_date;
         this.cate_no = cate_no;
+        this.delete_check = 0;
     }
 
     protected Rest_Info(Parcel in) {
@@ -30,6 +32,7 @@ public class Rest_Info implements Parcelable{
         url = in.readString();
         reg_date = in.readString();
         cate_no = in.readInt();
+        delete_check = in.readInt();
     }
 
     public static final Creator<Rest_Info> CREATOR = new Creator<Rest_Info>() {
@@ -57,12 +60,9 @@ public class Rest_Info implements Parcelable{
         dest.writeString(url);
         dest.writeString(reg_date);
         dest.writeInt(cate_no);
+        dest.writeInt(delete_check);
     }
 
-    @Override
-    public String toString() {
-        return this.name.toString();
-    }
     public String getName(){
         return this.name;
     }
@@ -80,5 +80,11 @@ public class Rest_Info implements Parcelable{
     }
     public int getCate_no(){
         return this.cate_no;
+    }
+    public int getDelete_check(){
+        return this.delete_check;
+    }
+    public void setDelete_check(int data){
+        this.delete_check = data;
     }
 }

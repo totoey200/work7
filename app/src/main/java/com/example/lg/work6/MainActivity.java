@@ -6,10 +6,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,22 +22,24 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ListView lv;
-    TextView tv;
+    Button delete;
+    EditText search_bar;
     ArrayList<Rest_Info> infolist = new ArrayList<>();
-    ArrayAdapter<Rest_Info> adapter;
+    ArrayList<Rest_Info> showlist = new ArrayList<>();
+    RestAdapter restAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tv = (TextView)findViewById(R.id.tv);
         setTitle("나의 맛집");
         initlist();
     }
     void initlist(){
         lv = (ListView)findViewById(R.id.listview);
-        adapter = new ArrayAdapter<Rest_Info>(this,android.R.layout.simple_list_item_1,
-                infolist);
-        lv.setAdapter(adapter);
+        search_bar = (EditText)findViewById(R.id.search_bar);
+        delete = (Button)findViewById(R.id.delete);
+        restAdapter = new RestAdapter(this,infolist);
+        lv.setAdapter(restAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -53,27 +60,78 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 infolist.remove(position);
-                                adapter.notifyDataSetChanged();
-                                tv.setText("맛집 리스트("+Integer.toString(infolist.size())+"개)");
+                                restAdapter.notifyDataSetChanged();
                             }
                         }).show();
                 return true;
             }
         });
+        search_bar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = s.toString();
+                if(search.length() > 0)
+                    lv.setFilterText(search);
+                else
+                    lv.clearTextFilter();
+            }
+        });
     }
     public void onClick(View v){
-        Intent intent = new Intent(this,Main2Activity.class);
-        startActivityForResult(intent,100);
+        if(v.getId() == R.id.add) {
+            Intent intent = new Intent(this, Main2Activity.class);
+            startActivityForResult(intent, 100);
+        }
+        else if(v.getId() == R.id.sort_name){
+            restAdapter.namesort();
+        }
+        else if(v.getId() == R.id.sort_type){
+            restAdapter.typesort();
+        }
+        else if(v.getId() == R.id.delete){
+            if(delete.getText().toString().equals("선택")){
+                delete.setText("삭제");
+                lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                restAdapter.showcheckbox(true);
+            }
+            else if(delete.getText().toString().equals("삭제")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("삭제확인")
+                        .setMessage("선택한 맛집을 정말 삭제할거에요?")
+                        .setNegativeButton("취소",null)
+                        .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for(int i = infolist.size()-1;i>=0;i--){
+                                    if(infolist.get(i).getDelete_check()==1)
+                                        infolist.remove(i);
+                                }
+                                delete.setText("선택");
+                                lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                                restAdapter.showcheckbox(false);
+                            }
+                        }).show();
+            }
+        }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 100){
             if(resultCode == RESULT_OK){
                 Rest_Info rest_info = data.getParcelableExtra("info");
                 infolist.add(rest_info);
-                adapter.notifyDataSetChanged();
-                tv.setText("맛집 리스트("+Integer.toString(infolist.size())+"개)");
+                showlist = infolist;
+                restAdapter.notifyDataSetChanged();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
