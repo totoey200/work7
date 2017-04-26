@@ -67,13 +67,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
+                boolean check = false;
                 if(search.length() > 0){
                     int length = infolist.size();
                     showlist.clear();
                     for(int i=0;i<length;i++){
                         if(infolist.get(i).getName().contains(search)){
+                            check = true;
                             showlist.add(infolist.get(i));
                         }
+                    }
+                    if(!check){
+                        showlist.addAll(infolist);
                     }
                 }
                 else{
@@ -129,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 if(changed){
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("삭제확인")
+                            .setIcon(R.drawable.potato)
                             .setMessage("선택한 맛집을 정말 삭제할거에요?")
                             .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                                 @Override
