@@ -67,25 +67,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
-                boolean check = false;
-                if(search.length() > 0){
-                    int length = infolist.size();
-                    showlist.clear();
-                    for(int i=0;i<length;i++){
-                        if(infolist.get(i).getName().contains(search)){
-                            check = true;
-                            showlist.add(infolist.get(i));
-                        }
-                    }
-                    if(!check){
-                        showlist.addAll(infolist);
-                    }
-                }
-                else{
-                    showlist.clear();
-                    showlist.addAll(infolist);
-                }
-                restAdapter.notifyDataSetChanged();
+                search_algo(search);
             }
         });
         add.setOnLongClickListener(new View.OnLongClickListener() {
@@ -156,12 +138,14 @@ public class MainActivity extends AppCompatActivity {
                                     for(int i = infolist.size()-1;i>=0;i--){
                                         if(infolist.get(i).getDelete_check()==1) {
                                             infolist.remove(i);
-                                            showlist.remove(i);
                                         }
                                     }
+                                    showlist.clear();
+                                    showlist.addAll(infolist);
                                     delete.setText("선택");
                                     lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
                                     restAdapter.showcheckbox(false);
+                                    search_algo(Main2Activity.convert(search_bar));
                                 }
                             }).show();
                 }
@@ -199,6 +183,28 @@ public class MainActivity extends AppCompatActivity {
         showlist.add(newdata2);
         infolist.add(newdata3);
         showlist.add(newdata3);
+        restAdapter.notifyDataSetChanged();
+    }
+    void search_algo(String search){
+        search = search.toLowerCase();
+        boolean check = false;
+        if(search.length() > 0){
+            int length = infolist.size();
+            showlist.clear();
+            for(Rest_Info rest_info:infolist){
+                if(rest_info.getName().toLowerCase().contains(search)){
+                    check = true;
+                    showlist.add(rest_info);
+                }
+            }
+            if(!check){
+                showlist.addAll(infolist);
+            }
+        }
+        else{
+            showlist.clear();
+            showlist.addAll(infolist);
+        }
         restAdapter.notifyDataSetChanged();
     }
 }

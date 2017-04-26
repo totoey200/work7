@@ -64,7 +64,7 @@ public class Main2Activity extends AppCompatActivity {
             finish();
         }
     }
-    public String convert(EditText et){
+    public static String convert(EditText et){
         return et.getText().toString();
     }
     public int cate_num(RadioButton r1,RadioButton r2, RadioButton r3){
