@@ -18,11 +18,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     ListView lv;
-    Button delete;
+    Button delete,add;
     EditText search_bar;
     ArrayList<Rest_Info> infolist = new ArrayList<>();
     ArrayList<Rest_Info> showlist = new ArrayList<>();
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         lv = (ListView)findViewById(R.id.listview);
         search_bar = (EditText)findViewById(R.id.search_bar);
         delete = (Button)findViewById(R.id.delete);
+        add = (Button)findViewById(R.id.add);
         restAdapter = new RestAdapter(this,showlist);
         lv.setAdapter(restAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,6 +81,23 @@ public class MainActivity extends AppCompatActivity {
                     showlist.addAll(infolist);
                 }
                 restAdapter.notifyDataSetChanged();
+            }
+        });
+        add.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("데이터 추가");
+                builder.setMessage("예제 데이터를 추가하시겠습니까?");
+                builder.setNegativeButton("취소",null);
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        add_initdata();
+                    }
+                });
+                builder.show();
+                return true;
             }
         });
     }
@@ -158,5 +179,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+    void add_initdata(){
+        String[] menu = {"menu1(10000)","menu2(20000)","menu3(30000)"};
+        DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        String date = df.format(Calendar.getInstance().getTime());
+        Rest_Info newdata1 = new Rest_Info("chicken","01012341234",menu,"http://naver.com",date,1);
+        Rest_Info newdata2 = new Rest_Info("pizza","01011111111",menu,"http://naver.com",date,2);
+        Rest_Info newdata3 = new Rest_Info("hamburger","01022222222",menu,"http://naver.com",date,3);
+        infolist.add(newdata1);
+        showlist.add(newdata1);
+        infolist.add(newdata2);
+        showlist.add(newdata2);
+        infolist.add(newdata3);
+        showlist.add(newdata3);
+        restAdapter.notifyDataSetChanged();
     }
 }

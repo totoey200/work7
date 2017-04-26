@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <ImageView
+        android:layout_marginRight="15dp"
         android:id="@+id/list_image"
         android:layout_width="50dp"
         android:layout_height="50dp"/>
@@ -15,6 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <TextView
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:textColor="#8e6264"
             android:id="@+id/list_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
