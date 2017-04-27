@@ -193,12 +193,8 @@ public class MainActivity extends AppCompatActivity {
             showlist.clear();
             for(Rest_Info rest_info:infolist){
                 if(rest_info.getName().toLowerCase().contains(search)){
-                    check = true;
                     showlist.add(rest_info);
                 }
-            }
-            if(!check){
-                showlist.addAll(infolist);
             }
         }
         else{
